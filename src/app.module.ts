@@ -11,7 +11,7 @@ import dataSource from './config/data-source';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
     TypeOrmModule.forRoot(dataSource.options),
     UsersModule,
