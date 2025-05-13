@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  # PostgreSQL 服务定义
+  postgres:
+    # 这个名字将成为网络中的主机名
+    image: bitnami/postgresql
+    environment:
+      - POSTGRESQL_USERNAME=${DB_USER}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRESQL_DATABASE=${DB_NAME}
+      - POSTGRESQL_TIMEZONE=Asia/Shanghai
+    ports:
+      - '${DB_PORT}:5432'
+      # volumes:
+      # - postgres_data:/bitnami/postgresql
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${DB_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # API 服务定义
+    # api:
+    #   build: .
+    #   depends_on:
+    #     postgres:
+    #       condition: service_healthy
+    #   environment:
+    #     - DB_HOST=postgres # 使用 postgres 服务名作为主机名
+    #     - DB_PORT=${DB_PORT}
+    #     - DB_USER=${DB_USER}
+    #     - DB_PASSWORD=${DB_PASSWORD}
+    #     - DB_NAME=${DB_NAME}
+    #     - NODE_ENV=${NODE_ENV}
+    #   ports:
+    #     - '${PORT}:3000'
+
+    # volumes:
+    # postgres_data:
