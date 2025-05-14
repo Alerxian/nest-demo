@@ -46,7 +46,7 @@ async function createDatabaseIfNotExists() {
   }
 }
 
-async function initializeSchema(ds: DataSource) {
+export async function initializeSchema(ds: DataSource) {
   try {
     // 检查是否需要初始化架构
     const tableExists = await ds.query(`
@@ -106,7 +106,7 @@ async function syncDatabase() {
     const ds = await dataSource.initialize();
 
     // 3. 同步数据库架构
-    await initializeSchema(ds);
+    // await initializeSchema(ds);
 
     // 4. 创建管理员账号
     await createAdminUser(ds);
