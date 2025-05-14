@@ -5,6 +5,7 @@ import { Client } from 'pg';
 import { config } from 'dotenv';
 import * as path from 'path';
 import dataSource from '../src/config/data-source';
+import * as bcrypt from 'bcrypt';
 
 const logger = new Logger('DatabaseSync');
 
@@ -51,8 +52,8 @@ export async function initializeSchema(ds: DataSource) {
     // 检查是否需要初始化架构
     const tableExists = await ds.query(`
       SELECT EXISTS (
-        SELECT FROM information_schema.tables 
-        WHERE table_schema = 'public' 
+        SELECT FROM information_schema.tables
+        WHERE table_schema = 'public'
         AND table_name = 'user'
       );
     `);
@@ -79,9 +80,10 @@ async function createAdminUser(ds: DataSource) {
     });
 
     if (!adminExists) {
+      const pwd = await bcrypt.hash('admin123', 10);
       const admin = userRepository.create({
         username: 'admin',
-        password: 'admin123',
+        password: pwd,
         email: 'admin@example.com',
         isActive: true,
       });
@@ -106,7 +108,7 @@ async function syncDatabase() {
     const ds = await dataSource.initialize();
 
     // 3. 同步数据库架构
-    // await initializeSchema(ds);
+    await initializeSchema(ds);
 
     // 4. 创建管理员账号
     await createAdminUser(ds);

@@ -7,6 +7,8 @@ import { UsersModule } from './users/users.module';
 import { PhotoModule } from './photo/photo.module';
 import { createDataSourceOptions } from './config/data-source';
 import { HealthController } from './health/health.controller';
+import { AuthModule } from './auth/auth.module';
+import { GlobalModule } from './common/module/global.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { HealthController } from './health/health.controller';
     }),
     UsersModule,
     PhotoModule,
+    AuthModule,
+    GlobalModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],
