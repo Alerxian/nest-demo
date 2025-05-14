@@ -11,15 +11,17 @@ services:
     ports:
       - '${DB_PORT}:5432'
     volumes:
-      - postgres_data:/bitnami/postgresql
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${DB_USER}" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
     # API 服务定义
   api:
     build: .
+    command: [ "./scripts/start.sh" ]
     depends_on:
       postgres:
         condition: service_healthy
@@ -32,6 +34,17 @@ services:
       - NODE_ENV=${NODE_ENV}
     ports:
       - '${PORT}:3000'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - .:/app # 挂载源代码目录
+      - ./node_modules:/app/node_modules # 持久化 node_modules
+      - ./uploads:/app/uploads # 挂载上传文件目录
 
 volumes:
   postgres_data:
+    driver: local
+    name: nest_demo_postgres_data # 指定卷名称
