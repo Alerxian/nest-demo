@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { Logger } from '@nestjs/common';
-import { User } from '../src/users/entities/user.entity';
+import { User } from '../src/modules/users/entities/user.entity';
 import { Client } from 'pg';
 import { config } from 'dotenv';
 import * as path from 'path';

@@ -3,11 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
-import { PhotoModule } from './photo/photo.module';
+import { UsersModule } from './modules/users/users.module';
+import { PhotoModule } from './modules/photo/photo.module';
 import { createDataSourceOptions } from './config/data-source';
-import { HealthController } from './health/health.controller';
-import { AuthModule } from './auth/auth.module';
+import { HealthController } from './common/controllers/health.controller';
+import { AuthModule } from './modules/auth/auth.module';
 import { GlobalModule } from './common/module/global.module';
 
 @Module({
@@ -42,9 +42,4 @@ import { GlobalModule } from './common/module/global.module';
   controllers: [AppController, HealthController],
   providers: [AppService],
 })
-export class AppModule {
-  constructor() {
-    Logger.log(`Current environment: ${process.env.NODE_ENV}`, 'AppModule');
-    Logger.log(`Database: ${process.env.DB_NAME}`, 'AppModule');
-  }
-}
+export class AppModule {}
