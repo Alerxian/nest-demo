@@ -8,12 +8,13 @@ import { HealthController } from './common/controllers/health.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { GlobalModule } from './common/module/global.module';
 import configuration from './config/configuration';
+import { RedisModule as NestRedisModule } from '@liaoliaots/nestjs-redis';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.development`, '.env'],
+      envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
       load: [
         () => {
           // 添加调试信息
@@ -33,6 +34,16 @@ import configuration from './config/configuration';
       useFactory: (configService: ConfigService) =>
         createDataSourceOptions(configService),
       inject: [ConfigService],
+    }),
+    NestRedisModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        config: {
+          host: configService.get('redis.host'),
+          port: configService.get('redis.port'),
+          password: configService.get('redis.password'),
+        },
+      }),
     }),
     UsersModule,
     PhotoModule,

@@ -43,7 +43,7 @@ export const createDataSourceOptions = (
 };
 
 // 加载环境变量
-config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
+config({ path: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'] });
 const configService = new ConfigService();
 
 // 添加默认导出的 DataSource 实例

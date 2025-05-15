@@ -16,7 +16,25 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+  redis:
+    image: bitnami/redis
+    ports:
+      - '${REDIS_PORT}:6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data:/bitnami/redis/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
 volumes:
   postgres_data:
     driver: local
     name: nest_demo_postgres_data # 指定卷名称
+  redis_data:
+    driver: local
+    name: nest_demo_redis_data

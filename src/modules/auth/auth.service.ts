@@ -11,7 +11,6 @@ import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +18,6 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly userService: UsersService,
-    private req: Request,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -49,16 +47,7 @@ export class AuthService {
         });
       }
 
-      const token = await this.generateToken(user);
-
-      return {
-        code: HttpStatus.OK,
-        data: {
-          token,
-          user,
-        },
-        message: '登录成功',
-      };
+      return user;
     } catch (error) {
       Logger.error('登录失败', error);
       throw error;
@@ -82,34 +71,5 @@ export class AuthService {
 
   async getProfile(userId: number) {
     return this.userService.findOne(userId);
-  }
-
-  async loginWithSession(loginDto: LoginDto) {
-    const { username, password } = loginDto;
-    // 查询用户是否存在
-    const user = await this.userRepository.findOne({
-      where: { username },
-    });
-    if (!user) {
-      throw new UnauthorizedException({
-        message: '用户或密码不正确',
-        code: HttpStatus.UNAUTHORIZED,
-      });
-    }
-    // 对比密码是否正确
-    const isValid = await bcrypt.compare(password, user.password);
-    Logger.debug(`Stored password hash: ${user.password}`);
-    Logger.debug(`Input password: ${password}`);
-
-    // 进行密码验证
-    Logger.debug(`Password comparison result: ${isValid}`);
-    if (!isValid) {
-      throw new UnauthorizedException({
-        message: '用户或密码不正确',
-        code: HttpStatus.UNAUTHORIZED,
-      });
-    }
-
-    this.req.session.user = user;
   }
 }
