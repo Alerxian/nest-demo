@@ -13,18 +13,18 @@ async function createDatabaseIfNotExists() {
   // 加载环境配置
   const env = process.env.NODE_ENV || 'development';
   config({ path: path.resolve(process.cwd(), `.env.${env}`) });
-
+  // console.log(process.env.DB_USERNAME, process.env);
   const client = new Client({
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT, 10),
-    user: process.env.DB_USER,
+    user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: 'postgres',
   });
 
   try {
     await client.connect();
-    const dbName = process.env.DB_NAME;
+    const dbName = process.env.DB_DATABASE || 'nest_demo';
 
     // 检查数据库是否存在
     const result = await client.query(

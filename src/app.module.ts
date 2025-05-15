@@ -1,6 +1,4 @@
 import { Logger, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
@@ -9,6 +7,7 @@ import { createDataSourceOptions } from './config/data-source';
 import { HealthController } from './common/controllers/health.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { GlobalModule } from './common/module/global.module';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
@@ -21,11 +20,12 @@ import { GlobalModule } from './common/module/global.module';
           Logger.debug(`加载环境配置:`, 'ConfigModule');
           Logger.debug(`NODE_ENV: ${process.env.NODE_ENV}`, 'ConfigModule');
           Logger.debug(
-            `配置文件: .env.${process.env.NODE_ENV}`,
+            `配置文件: .env.${process.env.DB_DATABASE}`,
             'ConfigModule',
           );
           return {};
         },
+        configuration,
       ],
     }),
     TypeOrmModule.forRootAsync({
@@ -39,7 +39,7 @@ import { GlobalModule } from './common/module/global.module';
     AuthModule,
     GlobalModule,
   ],
-  controllers: [AppController, HealthController],
-  providers: [AppService],
+  controllers: [HealthController],
+  providers: [],
 })
 export class AppModule {}
