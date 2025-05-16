@@ -8,9 +8,9 @@ declare namespace NodeJS {
     // 数据库配置
     DB_HOST: string;
     DB_PORT: string;
-    DB_USERNAME: string;
+    DB_USER: string;
     DB_PASSWORD: string;
-    DB_DATABASE: string;
+    DB_NAME: string;
 
     // JWT配置
     JWT_ACCESS_SECRET: string;

@@ -20,10 +20,7 @@ import { RedisModule as NestRedisModule } from '@liaoliaots/nestjs-redis';
           // 添加调试信息
           Logger.debug(`加载环境配置:`, 'ConfigModule');
           Logger.debug(`NODE_ENV: ${process.env.NODE_ENV}`, 'ConfigModule');
-          Logger.debug(
-            `配置文件: .env.${process.env.DB_DATABASE}`,
-            'ConfigModule',
-          );
+          Logger.debug(`配置文件: .env.${process.env.DB_NAME}`, 'ConfigModule');
           return {};
         },
         configuration,

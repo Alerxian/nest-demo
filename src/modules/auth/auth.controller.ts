@@ -10,12 +10,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
+import { LoginDto, LoginResponseDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RequestWithSession, RequestWithUser } from '@/types/request';
 import { SessionGuard } from './guards/session.guard';
 import { JwtAuthService } from './jwt.service';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -26,6 +34,12 @@ export class AuthController {
   /**
    * 登录
    */
+  @ApiOperation({ summary: '登录' })
+  @ApiResponse({ status: 200, description: '登录成功', type: LoginResponseDto })
+  @ApiResponse({ status: 401, description: '用户名或密码不正确' })
+  @ApiBody({
+    type: LoginDto,
+  })
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     const user = await this.authService.login(loginDto);
@@ -102,6 +116,7 @@ export class AuthController {
   }
 
   @Get('me')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req: RequestWithUser) {
     return this.authService.getProfile(req.user.userId);

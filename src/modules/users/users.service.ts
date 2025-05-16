@@ -65,7 +65,7 @@ export class UsersService {
       .getManyAndCount();
 
     return {
-      data: users,
+      item: users,
       total,
       page: Number(page),
       limit: Number(limit),
